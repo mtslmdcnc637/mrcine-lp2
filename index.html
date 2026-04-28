@@ -7,7 +7,7 @@
 <meta name="description" content="Você passa mais de 20 minutos escolhendo o que assistir? Em 2 minutos a IA do MrCine descobre seu perfil e recomenda filmes perfeitos pra você.">
 <meta property="og:title" content="Qual é o seu Perfil Cinematográfico?">
 <meta property="og:description" content="Quiz rápido que a IA usa pra nunca mais te dar uma recomendação errada.">
-<meta property="og:image" content="https://mrcine.pro/og-quiz.jpg">
+<meta property="og:image" content="https://lp2.mrcine.pro/og-quiz.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -715,7 +715,7 @@ header{text-align:center;padding:32px 0 24px}
     <div class="cta-section">
       <div class="cta-title" id="ctaTitle"></div>
       <p class="cta-sub" id="ctaSub"></p>
-      <a href="https://mrcine.pro" class="btn-cta-main" id="ctaBtn">
+      <a href="https://quiz.mrcine.pro" class="btn-cta-main" id="ctaBtn">
         Criar conta grátis e ver meus filmes →
       </a>
       <p class="cta-guarantee">
@@ -1304,7 +1304,7 @@ function showResult(){
   const name = encodeURIComponent(answers['name'] || '');
   const email = encodeURIComponent(answers['email'] || '');
   const wp = encodeURIComponent(answers['whatsapp'] || '');
-  ctaBtn.href = `https://mrcine.pro?perfil=${profile}&nome=${name}&email=${email}&wp=${wp}`;
+  ctaBtn.href = `https://quiz.mrcine.pro?perfil=${profile}&nome=${name}&email=${email}&wp=${wp}`;
 
   // Scroll to result
   resultStage.scrollIntoView({behavior:'smooth', block:'start'});
@@ -1312,7 +1312,7 @@ function showResult(){
   // Send data to backend (fire and forget)
   try {
     const payload = { name:answers['name'], email:answers['email'], whatsapp:answers['whatsapp'], profile_type:profile, answers:answers, completed:true };
-    fetch('https://mrcine.pro/api/quiz-lead', {
+    fetch('https://quiz.mrcine.pro/api/quiz-lead', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify(payload)
@@ -1322,17 +1322,17 @@ function showResult(){
 
 // ── SHARE ─────────────────────────────────────────────────────────────────
 function shareWhatsApp(){
-  const text = encodeURIComponent("Fiz o Quiz de Perfil Cinematográfico do MrCine e descobri que sou um " + document.getElementById('resName').textContent.replace(/[^a-zA-ZÀ-ú ]/g,'').trim() + "! Faz o teu também 👉 https://mrcine.pro/quiz");
+  const text = encodeURIComponent("Fiz o Quiz de Perfil Cinematográfico do MrCine e descobri que sou um " + document.getElementById('resName').textContent.replace(/[^a-zA-ZÀ-ú ]/g,'').trim() + "! Faz o teu também 👉 https://quiz.mrcine.pro");
   window.open('https://wa.me/?text=' + text, '_blank');
 }
 
 function copyLink(){
-  navigator.clipboard.writeText('https://mrcine.pro/quiz').then(() => {
+  navigator.clipboard.writeText('https://quiz.mrcine.pro').then(() => {
     const btn = document.getElementById('copyLinkText');
     btn.textContent = 'Link copiado! ✓';
     setTimeout(() => btn.textContent = 'Copiar link', 2000);
   }).catch(() => {
-    document.getElementById('copyLinkText').textContent = 'mrcine.pro/quiz';
+    document.getElementById('copyLinkText').textContent = 'quiz.mrcine.pro';
   });
 }
 </script>
