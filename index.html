@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Descubra Seu Perfil Cinematográfico | MrCine</title>
+<meta name="description" content="Você passa mais de 20 minutos escolhendo o que assistir? Em 2 minutos a IA do MrCine descobre seu perfil e recomenda filmes perfeitos pra você.">
+<meta property="og:title" content="Qual é o seu Perfil Cinematográfico?">
+<meta property="og:description" content="Quiz rápido que a IA usa pra nunca mais te dar uma recomendação errada.">
+<meta property="og:image" content="https://mrcine.pro/og-quiz.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#030303;
+  --surface:rgba(255,255,255,.05);
+  --border:rgba(255,255,255,.08);
+  --accent:#7c3aed;
+  --accent2:#a855f7;
+  --pink:#f472b6;
+  --text:#fff;
+  --muted:#9ca3af;
+  --gold:linear-gradient(135deg,#f59e0b,#fbbf24);
+  --glass:rgba(255,255,255,.05);
+  --radius:16px;
+}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'DM Sans',sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+  line-height:1.6;
+}
+
+/* ── BG ORBS ── */
+.orbs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.orbs span{position:absolute;border-radius:50%;filter:blur(100px);opacity:.35}
+.orbs span:nth-child(1){width:600px;height:600px;background:#7c3aed;top:-200px;left:-150px}
+.orbs span:nth-child(2){width:500px;height:500px;background:#f472b6;bottom:-200px;right:-100px}
+.orbs span:nth-child(3){width:300px;height:300px;background:#a855f7;top:40%;left:50%;transform:translateX(-50%)}
+
+/* ── LAYOUT ── */
+.wrap{position:relative;z-index:1;max-width:640px;margin:0 auto;padding:0 20px 80px}
+
+/* ── HEADER ── */
+header{text-align:center;padding:32px 0 24px}
+.logo{display:inline-flex;align-items:center;gap:8px;font-family:'Syne',sans-serif;font-size:22px;font-weight:800;letter-spacing:-.5px}
+.logo-dot{width:8px;height:8px;background:var(--accent2);border-radius:50%;display:inline-block}
+.badge-pro{
+  background:linear-gradient(135deg,#f59e0b,#fbbf24);
+  color:#000;
+  font-size:11px;
+  font-weight:700;
+  padding:2px 7px;
+  border-radius:6px;
+  letter-spacing:.5px;
+}
+
+/* ── HERO ── */
+.hero{
+  text-align:center;
+  padding:40px 0 32px;
+  animation:fadeUp .6s ease both;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+.hero-eyebrow{
+  display:inline-block;
+  background:rgba(124,58,237,.2);
+  border:1px solid rgba(124,58,237,.4);
+  color:var(--accent2);
+  font-size:13px;
+  font-weight:600;
+  padding:5px 14px;
+  border-radius:20px;
+  margin-bottom:20px;
+  letter-spacing:.3px;
+}
+.hero h1{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(28px,6vw,44px);
+  font-weight:800;
+  line-height:1.15;
+  letter-spacing:-1px;
+  margin-bottom:16px;
+}
+.hero h1 em{
+  font-style:normal;
+  background:linear-gradient(135deg,var(--accent2),var(--pink));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.hero-sub{
+  color:var(--muted);
+  font-size:16px;
+  max-width:480px;
+  margin:0 auto 28px;
+}
+.hero-sub strong{color:var(--text)}
+
+/* Trust bar */
+.trust{
+  display:flex;
+  justify-content:center;
+  gap:20px;
+  flex-wrap:wrap;
+  margin-bottom:36px;
+}
+.trust-item{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:13px;
+  color:var(--muted);
+}
+.trust-item svg{color:var(--accent2);flex-shrink:0}
+
+/* Start CTA */
+.btn-start{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;
+  font-family:'DM Sans',sans-serif;
+  font-size:17px;
+  font-weight:600;
+  padding:16px 36px;
+  border-radius:50px;
+  border:none;
+  cursor:pointer;
+  transition:transform .2s,box-shadow .2s;
+  box-shadow:0 0 40px rgba(124,58,237,.4);
+  text-decoration:none;
+}
+.btn-start:hover{transform:translateY(-2px);box-shadow:0 0 60px rgba(124,58,237,.6)}
+.btn-start svg{transition:transform .2s}
+.btn-start:hover svg{transform:translateX(4px)}
+
+.hero-hint{font-size:13px;color:var(--muted);margin-top:14px}
+
+/* ── PROGRESS BAR ── */
+.progress-wrap{
+  margin-bottom:28px;
+  display:none;
+}
+.progress-wrap.visible{display:block}
+.progress-label{
+  display:flex;
+  justify-content:space-between;
+  font-size:13px;
+  color:var(--muted);
+  margin-bottom:8px;
+}
+.progress-track{
+  background:rgba(255,255,255,.08);
+  border-radius:10px;
+  height:6px;
+  overflow:hidden;
+}
+.progress-fill{
+  height:100%;
+  border-radius:10px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  transition:width .4s ease;
+  width:0%;
+}
+.phase-label{
+  display:flex;
+  gap:6px;
+  margin-top:10px;
+}
+.phase-dot{
+  flex:1;
+  height:3px;
+  border-radius:3px;
+  background:rgba(255,255,255,.12);
+  transition:background .4s;
+}
+.phase-dot.done{background:var(--accent2)}
+.phase-dot.active{background:var(--pink)}
+
+/* ── QUESTION CARD ── */
+.quiz-stage{display:none}
+.quiz-stage.active{display:block;animation:fadeUp .4s ease both}
+
+.q-phase{
+  font-size:12px;
+  font-weight:600;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  color:var(--accent2);
+  margin-bottom:12px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.q-phase::before{
+  content:'';
+  width:20px;height:2px;
+  background:var(--accent2);
+  display:inline-block;
+}
+
+.q-title{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(20px,4vw,26px);
+  font-weight:700;
+  line-height:1.3;
+  margin-bottom:8px;
+}
+.q-sub{
+  font-size:14px;
+  color:var(--muted);
+  margin-bottom:24px;
+}
+
+/* Options */
+.options{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.opt{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:14px 16px;
+  background:var(--glass);
+  border:1.5px solid var(--border);
+  border-radius:var(--radius);
+  cursor:pointer;
+  transition:all .2s;
+  text-align:left;
+  color:var(--text);
+  font-family:'DM Sans',sans-serif;
+  font-size:15px;
+  font-weight:500;
+  position:relative;
+  overflow:hidden;
+  -webkit-tap-highlight-color:transparent;
+}
+.opt::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg,rgba(124,58,237,.15),rgba(168,85,247,.1));
+  opacity:0;
+  transition:opacity .2s;
+}
+.opt:hover::before,.opt.selected::before{opacity:1}
+.opt.selected{
+  border-color:var(--accent2);
+  box-shadow:0 0 0 1px var(--accent2),0 0 20px rgba(168,85,247,.2);
+}
+.opt-icon{
+  width:40px;height:40px;
+  border-radius:10px;
+  background:rgba(124,58,237,.15);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;
+  flex-shrink:0;
+  transition:transform .2s;
+}
+.opt.selected .opt-icon{transform:scale(1.1)}
+.opt-text{flex:1}
+.opt-check{
+  width:20px;height:20px;
+  border-radius:50%;
+  border:2px solid rgba(255,255,255,.2);
+  flex-shrink:0;
+  transition:all .2s;
+  display:flex;align-items:center;justify-content:center;
+}
+.opt.selected .opt-check{
+  background:var(--accent2);
+  border-color:var(--accent2);
+}
+.opt.selected .opt-check::after{
+  content:'✓';
+  font-size:11px;
+  color:#fff;
+  font-weight:700;
+}
+
+/* Multi-select hint */
+.multi-hint{
+  font-size:12px;
+  color:var(--muted);
+  text-align:center;
+  margin-top:-12px;
+  margin-bottom:16px;
+}
+
+/* Nav buttons */
+.q-nav{display:flex;gap:12px;justify-content:flex-end;align-items:center}
+.btn-back{
+  background:none;
+  border:1.5px solid var(--border);
+  color:var(--muted);
+  padding:12px 20px;
+  border-radius:50px;
+  font-family:'DM Sans',sans-serif;
+  font-size:15px;
+  cursor:pointer;
+  transition:all .2s;
+}
+.btn-back:hover{border-color:rgba(255,255,255,.3);color:var(--text)}
+.btn-next{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border:none;
+  color:#fff;
+  padding:13px 28px;
+  border-radius:50px;
+  font-family:'DM Sans',sans-serif;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+  transition:all .2s;
+  opacity:.5;
+  pointer-events:none;
+  display:flex;align-items:center;gap:8px;
+}
+.btn-next.enabled{opacity:1;pointer-events:auto}
+.btn-next.enabled:hover{transform:translateY(-1px);box-shadow:0 8px 30px rgba(124,58,237,.4)}
+
+/* ── INPUT GROUP ── */
+.input-group{display:flex;flex-direction:column;gap:14px;margin-bottom:24px}
+.field-wrap{position:relative}
+.field-label{
+  font-size:13px;
+  color:var(--muted);
+  font-weight:500;
+  margin-bottom:6px;
+  display:block;
+}
+.field-input{
+  width:100%;
+  background:var(--glass);
+  border:1.5px solid var(--border);
+  border-radius:var(--radius);
+  color:var(--text);
+  font-family:'DM Sans',sans-serif;
+  font-size:15px;
+  padding:14px 16px;
+  transition:border-color .2s,box-shadow .2s;
+  outline:none;
+  -webkit-appearance:none;
+}
+.field-input:focus{
+  border-color:var(--accent2);
+  box-shadow:0 0 0 3px rgba(168,85,247,.15);
+}
+.field-input::placeholder{color:rgba(156,163,175,.5)}
+.privacy-note{
+  font-size:12px;
+  color:rgba(156,163,175,.6);
+  text-align:center;
+  margin-top:4px;
+  display:flex;align-items:center;justify-content:center;gap:4px;
+}
+.whats-opt{
+  font-size:13px;
+  color:var(--muted);
+  text-align:center;
+}
+
+/* ── LOADING ── */
+.loading-stage{display:none;text-align:center;padding:40px 0}
+.loading-stage.active{display:block;animation:fadeUp .4s ease both}
+.loader-ring{
+  width:80px;height:80px;
+  margin:0 auto 28px;
+  position:relative;
+}
+.loader-ring::before,.loader-ring::after{
+  content:'';
+  position:absolute;
+  border-radius:50%;
+}
+.loader-ring::before{
+  inset:0;
+  border:3px solid rgba(255,255,255,.08);
+}
+.loader-ring::after{
+  inset:0;
+  border:3px solid transparent;
+  border-top-color:var(--accent2);
+  animation:spin 1s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loader-icon{
+  position:absolute;
+  inset:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:30px;
+}
+.loader-title{
+  font-family:'Syne',sans-serif;
+  font-size:20px;
+  font-weight:700;
+  margin-bottom:10px;
+}
+.loader-steps{
+  list-style:none;
+  display:inline-flex;
+  flex-direction:column;
+  gap:8px;
+  text-align:left;
+  margin:20px auto 0;
+}
+.loader-steps li{
+  font-size:14px;
+  color:var(--muted);
+  display:flex;align-items:center;gap:8px;
+  transition:color .3s;
+}
+.loader-steps li.done{color:var(--text)}
+.loader-steps li.done::before{content:'✓';color:var(--accent2);font-weight:700}
+.loader-steps li:not(.done)::before{content:'·';font-size:20px;line-height:0}
+
+/* ── RESULT ── */
+.result-stage{display:none;animation:fadeUp .5s ease both}
+.result-stage.active{display:block}
+
+.result-card{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:24px;
+  padding:32px 28px;
+  margin-bottom:24px;
+  position:relative;
+  overflow:hidden;
+}
+.result-card::before{
+  content:'';
+  position:absolute;
+  top:-60px;right:-60px;
+  width:200px;height:200px;
+  background:radial-gradient(circle,rgba(168,85,247,.3),transparent 70%);
+  pointer-events:none;
+}
+
+.result-label{
+  font-size:12px;
+  font-weight:600;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  color:var(--accent2);
+  margin-bottom:16px;
+}
+.result-profile-icon{font-size:56px;margin-bottom:12px;display:block}
+.result-profile-name{
+  font-family:'Syne',sans-serif;
+  font-size:28px;
+  font-weight:800;
+  margin-bottom:10px;
+  line-height:1.2;
+}
+.result-profile-name em{
+  font-style:normal;
+  background:linear-gradient(135deg,var(--accent2),var(--pink));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.result-desc{
+  color:var(--muted);
+  font-size:15px;
+  line-height:1.65;
+  margin-bottom:20px;
+}
+.result-traits{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-bottom:24px;
+}
+.trait-tag{
+  background:rgba(124,58,237,.15);
+  border:1px solid rgba(124,58,237,.3);
+  color:var(--accent2);
+  font-size:13px;
+  font-weight:500;
+  padding:4px 12px;
+  border-radius:20px;
+}
+
+/* Recommendation teaser */
+.rec-teaser{
+  background:rgba(0,0,0,.3);
+  border-radius:14px;
+  padding:18px;
+  position:relative;
+}
+.rec-teaser-title{
+  font-size:14px;
+  font-weight:600;
+  margin-bottom:12px;
+  color:var(--text);
+}
+.rec-movies{
+  display:flex;
+  gap:10px;
+  overflow:hidden;
+}
+.rec-movie{
+  flex-shrink:0;
+  width:64px;
+}
+.rec-movie-poster{
+  width:64px;height:96px;
+  border-radius:8px;
+  background:rgba(255,255,255,.08);
+  position:relative;
+  overflow:hidden;
+  margin-bottom:4px;
+}
+.rec-movie-poster::after{
+  content:'🎬';
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;
+  background:rgba(124,58,237,.15);
+}
+.rec-movie-title{font-size:10px;color:var(--muted);text-align:center;line-height:1.3}
+.rec-blur{
+  position:absolute;
+  right:0;top:0;bottom:0;
+  width:60%;
+  background:linear-gradient(90deg,transparent,rgba(5,5,15,.95));
+  display:flex;align-items:center;justify-content:flex-end;
+  padding-right:18px;
+  border-radius:0 14px 14px 0;
+}
+.rec-blur-cta{
+  text-align:center;
+  font-size:13px;
+  font-weight:600;
+  color:var(--text);
+  line-height:1.4;
+}
+.rec-blur-cta small{display:block;color:var(--accent2);font-size:12px;margin-bottom:4px;font-weight:700}
+
+/* CTA section */
+.cta-section{text-align:center;margin-top:8px}
+.cta-title{
+  font-family:'Syne',sans-serif;
+  font-size:22px;
+  font-weight:700;
+  line-height:1.3;
+  margin-bottom:8px;
+}
+.cta-sub{color:var(--muted);font-size:15px;margin-bottom:24px}
+.btn-cta-main{
+  display:block;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;
+  text-decoration:none;
+  padding:16px 28px;
+  border-radius:50px;
+  font-family:'DM Sans',sans-serif;
+  font-size:17px;
+  font-weight:600;
+  margin-bottom:12px;
+  transition:all .2s;
+  box-shadow:0 0 40px rgba(124,58,237,.4);
+  border:none;
+  cursor:pointer;
+  width:100%;
+}
+.btn-cta-main:hover{transform:translateY(-2px);box-shadow:0 0 60px rgba(124,58,237,.6)}
+.cta-guarantee{
+  font-size:13px;
+  color:rgba(156,163,175,.6);
+  display:flex;align-items:center;justify-content:center;gap:5px;
+}
+.cta-social{
+  margin-top:20px;
+  padding-top:20px;
+  border-top:1px solid var(--border);
+}
+.cta-social p{font-size:14px;color:var(--muted);margin-bottom:12px}
+.share-btns{display:flex;gap:10px;justify-content:center}
+.share-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--glass);
+  border:1.5px solid var(--border);
+  color:var(--text);
+  padding:10px 18px;
+  border-radius:50px;
+  font-family:'DM Sans',sans-serif;
+  font-size:14px;
+  font-weight:500;
+  cursor:pointer;
+  transition:all .2s;
+  text-decoration:none;
+}
+.share-btn:hover{border-color:rgba(255,255,255,.3);transform:translateY(-1px)}
+
+/* ── UTILITY ── */
+.hidden{display:none!important}
+
+@media(max-width:400px){
+  .trust{gap:12px}
+  .trust-item{font-size:12px}
+  .opt{padding:12px 14px}
+  .opt-icon{width:36px;height:36px;font-size:18px}
+}
+</style>
+</head>
+<body>
+<div class="orbs" aria-hidden="true">
+  <span></span><span></span><span></span>
+</div>
+
+<div class="wrap">
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <span class="logo-dot"></span>MrCine<span class="badge-pro">PRO</span>
+    </div>
+  </header>
+
+  <!-- HERO (Fase 0) -->
+  <section id="heroSection" class="quiz-stage active">
+    <div class="hero">
+      <span class="hero-eyebrow">⚡ Quiz de Perfil Cinematográfico</span>
+      <h1>Você ainda gasta <em>40 minutos</em><br>escolhendo um filme?</h1>
+      <p class="hero-sub">
+        A maioria das pessoas abre o Netflix, rola por 20 minutos e acaba assistindo a <strong>mesma coisa de sempre</strong> — ou não assiste nada.
+        <br><br>
+        Em 2 minutos a IA do MrCine descobre seu perfil e nunca mais te deixa na mão.
+      </p>
+      <div class="trust">
+        <div class="trust-item">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/><path d="m9 12 2 2 4-4"/></svg>
+          Grátis, sem cartão
+        </div>
+        <div class="trust-item">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          2 minutos
+        </div>
+        <div class="trust-item">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          +12 mil pessoas já fizeram
+        </div>
+      </div>
+      <button class="btn-start" id="btnStart" onclick="startQuiz()">
+        Descobrir meu perfil agora
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+      <p class="hero-hint">14 perguntas · nenhum dado compartilhado sem sua permissão</p>
+    </div>
+  </section>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap" id="progressWrap">
+    <div class="progress-label">
+      <span id="progressText">Fase 1 de 5 — Seu Perfil</span>
+      <span id="progressNum">0 / 14</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="phase-label" id="phaseDots"></div>
+  </div>
+
+  <!-- QUIZ QUESTIONS -->
+  <div id="quizContainer"></div>
+
+  <!-- LOADING -->
+  <div class="loading-stage" id="loadingStage">
+    <div class="loader-ring">
+      <div class="loader-icon">🎬</div>
+    </div>
+    <div class="loader-title">A IA está analisando seu perfil…</div>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:4px">Baseado nas suas respostas, estamos mapeando</p>
+    <ul class="loader-steps" id="loaderSteps">
+      <li>Seus gêneros favoritos e humor preferido</li>
+      <li>Como você assiste e com quem</li>
+      <li>Suas frustrações com outros apps</li>
+      <li>Seu tipo de personalidade cinematográfica</li>
+      <li>Montando seu Perfil Definitivo</li>
+    </ul>
+  </div>
+
+  <!-- RESULTADO -->
+  <div class="result-stage" id="resultStage">
+    <div class="result-card">
+      <div class="result-label">Seu Perfil Cinematográfico</div>
+      <span class="result-profile-icon" id="resIcon"></span>
+      <div class="result-profile-name" id="resName"></div>
+      <p class="result-desc" id="resDesc"></p>
+      <div class="result-traits" id="resTraits"></div>
+
+      <div class="rec-teaser">
+        <div class="rec-teaser-title">🎯 Filmes perfeitos pra você <em>(desbloqueie abaixo)</em></div>
+        <div class="rec-movies" id="recMovies">
+          <div class="rec-movie"><div class="rec-movie-poster"></div><div class="rec-movie-title">Midsommar</div></div>
+          <div class="rec-movie"><div class="rec-movie-poster"></div><div class="rec-movie-title">Her</div></div>
+          <div class="rec-movie"><div class="rec-movie-poster"></div><div class="rec-movie-title">Arrival</div></div>
+          <div class="rec-movie"><div class="rec-movie-poster"></div><div class="rec-movie-title">Hereditary</div></div>
+        </div>
+        <div class="rec-blur">
+          <div class="rec-blur-cta">
+            <small>+ 3 filmes esperando</small>
+            Crie sua conta<br>pra ver tudo
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-section">
+      <div class="cta-title" id="ctaTitle"></div>
+      <p class="cta-sub" id="ctaSub"></p>
+      <a href="https://mrcine.pro" class="btn-cta-main" id="ctaBtn">
+        Criar conta grátis e ver meus filmes →
+      </a>
+      <p class="cta-guarantee">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Seus dados estão seguros · LGPD · Sem spam
+      </p>
+      <div class="cta-social">
+        <p>Conhece alguém que vive perdido escolhendo filme?</p>
+        <div class="share-btns">
+          <button class="share-btn" id="shareWhats" onclick="shareWhatsApp()">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+            Compartilhar
+          </button>
+          <button class="share-btn" onclick="copyLink()">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            <span id="copyLinkText">Copiar link</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /wrap -->
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────
+const PHASES = [
+  {id:1, label:"Seu Perfil"},
+  {id:2, label:"Seus Hábitos"},
+  {id:3, label:"Suas Dores"},
+  {id:4, label:"Sua Personalidade"},
+  {id:5, label:"Quase lá"}
+];
+
+const QUESTIONS = [
+  // FASE 1 — PERFIL
+  {
+    id:1, phase:1,
+    phaseLabel:"FASE 1 — SEU PERFIL",
+    title:"Por que você geralmente coloca um filme?",
+    sub:"Seja honesto — não tem resposta errada.",
+    type:"single",
+    options:[
+      {icon:"😌", text:"Quero relaxar e desligar a cabeça"},
+      {icon:"😭", text:"Quero sentir algo de verdade — chorar, rir, me emocionar"},
+      {icon:"🤯", text:"Quero ser surpreendido por uma história incrível"},
+      {icon:"👥", text:"É uma desculpa pra reunir a galera"}
+    ]
+  },
+  {
+    id:2, phase:1,
+    phaseLabel:"FASE 1 — SEU PERFIL",
+    title:"Quais gêneros você mais curte?",
+    sub:"Pode marcar mais de um.",
+    type:"multi",
+    options:[
+      {icon:"😱", text:"Terror / Suspense"},
+      {icon:"🚀", text:"Ficção Científica / Fantasia"},
+      {icon:"😂", text:"Comédia"},
+      {icon:"💔", text:"Drama / Romance"},
+      {icon:"💥", text:"Ação / Aventura"},
+      {icon:"📜", text:"Crime / Thriller"},
+      {icon:"🎭", text:"Documentário"},
+      {icon:"🎌", text:"Animação"}
+    ]
+  },
+  {
+    id:3, phase:1,
+    phaseLabel:"FASE 1 — SEU PERFIL",
+    title:"Qual época de cinema mais te atrai?",
+    sub:"",
+    type:"single",
+    options:[
+      {icon:"📺", text:"Clássicos (antes dos anos 90) — tem uma magia que não se repete"},
+      {icon:"🎬", text:"Anos 90 e 2000 — a era de ouro na minha opinião"},
+      {icon:"✨", text:"Filmes modernos (2010+) — produção, efeitos e narrativa melhores"},
+      {icon:"🌍", text:"Não importa a época, qualquer coisa boa vale"}
+    ]
+  },
+  {
+    id:4, phase:1,
+    phaseLabel:"FASE 1 — SEU PERFIL",
+    title:"Filme ou série?",
+    sub:"Se tivesse que escolher UMA coisa pra próxima semana…",
+    type:"single",
+    options:[
+      {icon:"🎬", text:"Filme — prefiro uma história completa de uma vez"},
+      {icon:"📺", text:"Série — adoro acompanhar temporadas"},
+      {icon:"🤷", text:"Depende do humor do dia"}
+    ]
+  },
+  // FASE 2 — HÁBITOS
+  {
+    id:5, phase:2,
+    phaseLabel:"FASE 2 — SEUS HÁBITOS",
+    title:"Com que frequência você assiste algo?",
+    sub:"",
+    type:"single",
+    options:[
+      {icon:"📅", text:"Todo dia ou quase todo dia"},
+      {icon:"🗓️", text:"2 a 4 vezes por semana"},
+      {icon:"🛋️", text:"Só nos fins de semana"},
+      {icon:"🌙", text:"Quando sobra um tempinho, raramente"}
+    ]
+  },
+  {
+    id:6, phase:2,
+    phaseLabel:"FASE 2 — SEUS HÁBITOS",
+    title:"Como você geralmente assiste?",
+    sub:"",
+    type:"single",
+    options:[
+      {icon:"🧍", text:"Sozinho(a) — meu momento pra mim"},
+      {icon:"💑", text:"Com parceiro(a) ou cônjuge"},
+      {icon:"👨‍👩‍👧", text:"Com a família toda"},
+      {icon:"🍺", text:"Com amigos — vira um evento social"}
+    ]
+  },
+  {
+    id:7, phase:2,
+    phaseLabel:"FASE 2 — SEUS HÁBITOS",
+    title:"Quais streamings você tem?",
+    sub:"Pode marcar todos.",
+    type:"multi",
+    options:[
+      {icon:"🔴", text:"Netflix"},
+      {icon:"🎵", text:"Prime Video"},
+      {icon:"🏰", text:"Disney+"},
+      {icon:"⚡", text:"Max (antigo HBO)"},
+      {icon:"🍎", text:"Apple TV+"},
+      {icon:"📡", text:"Globoplay"},
+      {icon:"🔑", text:"Só YouTube / gratuito"}
+    ]
+  },
+  {
+    id:8, phase:2,
+    phaseLabel:"FASE 2 — SEUS HÁBITOS",
+    title:"Qual horário você mais assiste?",
+    sub:"",
+    type:"single",
+    options:[
+      {icon:"🌅", text:"De manhã / tarde — tenho horário livre"},
+      {icon:"🌆", text:"À noite, depois do trabalho"},
+      {icon:"🌙", text:"Tarde da noite, madrugada"},
+      {icon:"🎲", text:"Aleatório — depende do dia"}
+    ]
+  },
+  // FASE 3 — FRUSTRAÇÕES
+  {
+    id:9, phase:3,
+    phaseLabel:"FASE 3 — SUAS DORES",
+    title:"Qual dessas situações mais te irrita?",
+    sub:"Seja honesto — essa pergunta é importante pra IA te entender.",
+    type:"single",
+    options:[
+      {icon:"⏳", text:"Perco 20+ minutos escolhendo e não assisto nada"},
+      {icon:"❓", text:"Não sei em qual plataforma está o que eu quero"},
+      {icon:"😴", text:"Sempre começo filmes e durmo no meio sem querer"},
+      {icon:"🤔", text:"O algoritmo só sugere coisas que já vi ou óbvias"}
+    ]
+  },
+  {
+    id:10, phase:3,
+    phaseLabel:"FASE 3 — SUAS DORES",
+    title:"Já aconteceu de você abrir o Netflix, rolar por 15 minutos e fechar sem assistir nada?",
+    sub:"",
+    type:"single",
+    options:[
+      {icon:"😩", text:"Sim, toda semana isso acontece"},
+      {icon:"😅", text:"Algumas vezes por mês"},
+      {icon:"🤷", text:"Raramente, eu sempre acho algo"},
+      {icon:"🙅", text:"Nunca — tenho uma watchlist gigante"}
+    ]
+  },
+  // FASE 4 — PERSONALIDADE
+  {
+    id:11, phase:4,
+    phaseLabel:"FASE 4 — SUA PERSONALIDADE",
+    title:"Como você lida com recomendações de amigos?",
+    sub:"",
+    type:"single",
+    options:[
+      {icon:"🏃", text:"Corro assistir na hora — confio muito nas indicações"},
+      {icon:"🔍", text:"Pesquiso antes: leio reviews, vejo a nota no IMDb"},
+      {icon:"🌊", text:"Depende de quem indicou — nem todos têm bom gosto"},
+      {icon:"🗺️", text:"Prefiro descobrir por conta própria, sem spoilers"}
+    ]
+  },
+  {
+    id:12, phase:4,
+    phaseLabel:"FASE 4 — SUA PERSONALIDADE",
+    title:"Como você reage a plot twists inesperados?",
+    sub:"",
+    type:"single",
+    options:[
+      {icon:"😤", text:"Me sinto enganado(a) se não faz sentido"},
+      {icon:"🤩", text:"Adoro — quanto mais louco melhor"},
+      {icon:"🧩", text:"Curto quando são bem construídos e fazem sentido"},
+      {icon:"😐", text:"Tanto faz, o que importa é a jornada"}
+    ]
+  },
+  {
+    id:13, phase:4,
+    phaseLabel:"FASE 4 — SUA PERSONALIDADE",
+    title:"Você reassiste filmes que já ama?",
+    sub:"",
+    type:"single",
+    options:[
+      {icon:"🔄", text:"Sim, tenho filmes que já vi mais de 5 vezes"},
+      {icon:"📖", text:"Às vezes, especialmente quando preciso de conforto"},
+      {icon:"🆕", text:"Raramente — prefiro usar o tempo descobrindo novidades"},
+      {icon:"🚫", text:"Nunca — a vida é curta e há muito pra ver"}
+    ]
+  },
+  // FASE 5 — CAPTURA
+  {
+    id:14, phase:5,
+    phaseLabel:"FASE 5 — QUASE LÁ",
+    title:"Para onde a gente manda seu resultado?",
+    sub:"Seus dados ficam seguros — usamos só pra salvar seu perfil no MrCine.",
+    type:"capture",
+    fields:["name","email","whatsapp"]
+  }
+];
+
+const PROFILES = {
+  "explorador":{
+    icon:"🗺️",
+    name:'<em>Explorador</em> Cinematográfico',
+    desc:"Você não quer o que todo mundo tá assistindo. Você quer a joia que ninguém descobriu ainda. Aquele filme que vai mudar a forma como você vê o mundo — e que vai fazer você recomendar pra todo mundo depois. A IA do MrCine foi feita pra você: quanto mais incomum, melhor.",
+    traits:["🔍 Descobre joias escondidas","🌍 Gosta de cinema internacional","🎭 Curte narrativas não-lineares","🤔 Prefere pensar depois do filme"],
+    cta:{
+      title:"A IA do MrCine tem 847 joias escondidas que combinam com você",
+      sub:"Filmes que o algoritmo do Netflix nunca te mostraria. Crie sua conta grátis e acesse agora.",
+      btn:"Ver minhas recomendações personalizadas →"
+    }
+  },
+  "emocional":{
+    icon:"💔",
+    name:'<em>Espectador</em> Emocional',
+    desc:"Você não assiste filme. Você vive o filme. Se o personagem chora, você chora. Se tem injustiça, você fica com raiva. Essa conexão emocional é rara e incrível — e a IA do MrCine sabe exatamente quais filmes vão fazer você sentir tudo isso de novo.",
+    traits:["💔 Conecta emocionalmente","😭 Não tem medo de chorar","🎭 Ama storytelling intenso","❤️ Cuida das relações na tela"],
+    cta:{
+      title:"Temos 200+ filmes que vão te fazer sentir de verdade",
+      sub:"A IA analisa exatamente que tipo de emoção você está buscando hoje e te indica o filme certo.",
+      btn:"Encontrar meu próximo filme favorito →"
+    }
+  },
+  "analitico":{
+    icon:"🔍",
+    name:'<em>Crítico</em> Analítico',
+    desc:"Você não confia em indicação aleatória. Você pesquisa, verifica a nota, lê o review — e ainda assim às vezes se arrepende. A IA do MrCine é o único sistema que aprende com cada avaliação sua e para de te recomendar o óbvio depois de 3 filmes.",
+    traits:["📊 Pesquisa antes de assistir","⭐ Nota e reviews importam","🧠 Gosta de filmes com substância","🎯 Tem padrões altos"],
+    cta:{
+      title:"Para quem tem padrões altos: a IA que fica mais inteligente a cada avaliação",
+      sub:"Quanto mais você avalia, mais preciso fica. Sem recomendações genéricas — só filmes que valem o seu tempo.",
+      btn:"Criar minha conta e começar a avaliar →"
+    }
+  },
+  "social":{
+    icon:"🍿",
+    name:'<em>Maratonista</em> Social',
+    desc:"Filme é evento pra você. A experiência de assistir junto é tão boa quanto o filme em si. O MrCine tem o recurso 'Acordo de Paz' — você coloca todos os gostos do grupo e a IA encontra o filme perfeito que todo mundo vai curtir. Sem briga, sem compromisso.",
+    traits:["👥 Cinema é experiência coletiva","🍕 Pipoca com companhia","🤝 Bom negociador de filmes","😄 Anima qualquer sessão"],
+    cta:{
+      title:"Chega de 30 minutos decidindo o que o grupo vai assistir",
+      sub:"O 'Acordo de Paz' do MrCine resolve em segundos o que antes gerava discussão.",
+      btn:"Experimentar o Acordo de Paz grátis →"
+    }
+  },
+  "nostalgico":{
+    icon:"📼",
+    name:'<em>Nostálgico</em> por Natureza',
+    desc:"Para você, conforto importa. Reassistir um clássico é tão prazeroso quanto descobrir algo novo — às vezes mais. A IA do MrCine respeita isso e sabe quando recomendar uma novidade versus quando você precisa do seu filme de conforto.",
+    traits:["📼 Ama os clássicos","🏠 Cinema é conforto","🔄 Reassiste favoritos","⏳ Tem nostalgia do bom cinema"],
+    cta:{
+      title:"Seus clássicos favoritos têm filhos que você ainda não conhece",
+      sub:"A IA encontra filmes com o mesmo espírito e qualidade dos seus preferidos — novos para você, mas com a essência que você ama.",
+      btn:"Descobrir meus próximos favoritos →"
+    }
+  }
+};
+
+// ── STATE ─────────────────────────────────────────────────────────────────
+let currentQ = 0;
+let answers = {};
+let quizStarted = false;
+
+// ── INIT ──────────────────────────────────────────────────────────────────
+function buildPhaseDots(){
+  const dots = document.getElementById('phaseDots');
+  PHASES.forEach(p => {
+    const d = document.createElement('div');
+    d.className = 'phase-dot';
+    d.id = 'dot'+p.id;
+    dots.appendChild(d);
+  });
+}
+
+function startQuiz(){
+  document.getElementById('heroSection').classList.remove('active');
+  document.getElementById('heroSection').style.display = 'none';
+  document.getElementById('progressWrap').classList.add('visible');
+  buildPhaseDots();
+  showQuestion(0);
+}
+
+// ── RENDER QUESTION ───────────────────────────────────────────────────────
+function showQuestion(idx){
+  currentQ = idx;
+  const container = document.getElementById('quizContainer');
+  container.innerHTML = '';
+  const q = QUESTIONS[idx];
+
+  updateProgress(idx);
+
+  const stage = document.createElement('div');
+  stage.className = 'quiz-stage active';
+
+  if(q.type === 'capture'){
+    stage.innerHTML = renderCapture(q);
+  } else {
+    stage.innerHTML = renderQuestion(q);
+  }
+
+  container.appendChild(stage);
+
+  // bind events
+  if(q.type === 'single'){
+    stage.querySelectorAll('.opt').forEach(btn => {
+      btn.addEventListener('click', () => selectSingle(btn, idx));
+    });
+  } else if(q.type === 'multi'){
+    stage.querySelectorAll('.opt').forEach(btn => {
+      btn.addEventListener('click', () => selectMulti(btn, idx));
+    });
+  } else if(q.type === 'capture'){
+    stage.querySelectorAll('.field-input').forEach(inp => {
+      inp.addEventListener('input', () => checkCapture(idx));
+    });
+    checkCapture(idx);
+  }
+
+  const btnBack = stage.querySelector('.btn-back');
+  const btnNext = stage.querySelector('#btnNext');
+  if(btnBack) btnBack.addEventListener('click', () => goBack());
+  if(btnNext) btnNext.addEventListener('click', () => goNext());
+
+  // restore selection if returning
+  if(answers[idx] !== undefined){
+    if(q.type === 'single'){
+      const val = answers[idx];
+      const opts = stage.querySelectorAll('.opt');
+      if(opts[val]) opts[val].classList.add('selected');
+      enableNext();
+    } else if(q.type === 'multi'){
+      const vals = answers[idx] || [];
+      stage.querySelectorAll('.opt').forEach((btn, i) => {
+        if(vals.includes(i)) btn.classList.add('selected');
+      });
+      if(vals.length > 0) enableNext();
+    }
+  }
+}
+
+function renderQuestion(q){
+  const multiHint = q.type === 'multi' ? '<p class="multi-hint">Selecione quantos quiser</p>' : '';
+  const optionsHtml = q.options.map((o,i) => `
+    <button class="opt" data-idx="${i}">
+      <span class="opt-icon">${o.icon}</span>
+      <span class="opt-text">${o.text}</span>
+      <span class="opt-check"></span>
+    </button>
+  `).join('');
+
+  return `
+    <div class="q-phase">${q.phaseLabel}</div>
+    <h2 class="q-title">${q.title}</h2>
+    ${q.sub ? `<p class="q-sub">${q.sub}</p>` : ''}
+    <div class="options">${optionsHtml}</div>
+    ${multiHint}
+    <div class="q-nav">
+      ${currentQ > 0 ? '<button class="btn-back">← Voltar</button>' : ''}
+      <button class="btn-next" id="btnNext">
+        ${currentQ === QUESTIONS.length - 2 ? 'Última etapa →' : 'Próxima →'}
+      </button>
+    </div>
+  `;
+}
+
+function renderCapture(q){
+  return `
+    <div class="q-phase">${q.phaseLabel}</div>
+    <h2 class="q-title">${q.title}</h2>
+    <p class="q-sub">${q.sub}</p>
+    <div class="input-group">
+      <div class="field-wrap">
+        <label class="field-label" for="capName">Seu nome *</label>
+        <input type="text" id="capName" class="field-input" placeholder="Como posso te chamar?" autocomplete="given-name" required>
+      </div>
+      <div class="field-wrap">
+        <label class="field-label" for="capEmail">E-mail *</label>
+        <input type="email" id="capEmail" class="field-input" placeholder="seu@email.com" autocomplete="email" required>
+      </div>
+      <div class="field-wrap">
+        <label class="field-label" for="capWhats">WhatsApp <span style="color:var(--muted);font-weight:400">(opcional — pra te avisar de novidades)</span></label>
+        <input type="tel" id="capWhats" class="field-input" placeholder="(11) 99999-9999" autocomplete="tel">
+      </div>
+    </div>
+    <p class="privacy-note">
+      <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Seus dados são protegidos pela LGPD e nunca vendidos
+    </p>
+    <div class="q-nav" style="margin-top:20px">
+      <button class="btn-back">← Voltar</button>
+      <button class="btn-next" id="btnNext" style="background:linear-gradient(135deg,#7c3aed,#f472b6)">
+        Ver meu resultado 🎬
+      </button>
+    </div>
+  `;
+}
+
+// ── INTERACTIONS ──────────────────────────────────────────────────────────
+function selectSingle(btn, idx){
+  document.querySelectorAll('.opt').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  answers[idx] = parseInt(btn.dataset.idx);
+  enableNext();
+}
+
+function selectMulti(btn, idx){
+  btn.classList.toggle('selected');
+  const selected = Array.from(document.querySelectorAll('.opt.selected')).map(b => parseInt(b.dataset.idx));
+  answers[idx] = selected;
+  if(selected.length > 0){ enableNext(); } else { disableNext(); }
+}
+
+function checkCapture(idx){
+  const name = document.getElementById('capName')?.value.trim();
+  const email = document.getElementById('capEmail')?.value.trim();
+  const emailOk = email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  if(name && emailOk){ enableNext(); } else { disableNext(); }
+}
+
+function enableNext(){
+  const btn = document.getElementById('btnNext');
+  if(btn) btn.classList.add('enabled');
+}
+function disableNext(){
+  const btn = document.getElementById('btnNext');
+  if(btn) btn.classList.remove('enabled');
+}
+
+function goBack(){
+  if(currentQ > 0) showQuestion(currentQ - 1);
+}
+
+function goNext(){
+  const q = QUESTIONS[currentQ];
+  // Save capture data
+  if(q.type === 'capture'){
+    answers['name'] = document.getElementById('capName')?.value.trim();
+    answers['email'] = document.getElementById('capEmail')?.value.trim();
+    answers['whatsapp'] = document.getElementById('capWhats')?.value.trim();
+  }
+
+  if(currentQ < QUESTIONS.length - 1){
+    showQuestion(currentQ + 1);
+  } else {
+    showLoading();
+  }
+}
+
+// ── PROGRESS ──────────────────────────────────────────────────────────────
+function updateProgress(idx){
+  const q = QUESTIONS[idx];
+  const pct = Math.round((idx / QUESTIONS.length) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressNum').textContent = idx + ' / ' + QUESTIONS.length;
+  document.getElementById('progressText').textContent = 'Fase ' + q.phase + ' de 5 — ' + PHASES[q.phase-1].label;
+
+  PHASES.forEach((p,i) => {
+    const dot = document.getElementById('dot'+(i+1));
+    if(!dot) return;
+    dot.className = 'phase-dot' + (p.id < q.phase ? ' done' : p.id === q.phase ? ' active' : '');
+  });
+}
+
+// ── LOADING → RESULT ──────────────────────────────────────────────────────
+function showLoading(){
+  document.getElementById('quizContainer').innerHTML = '';
+  document.getElementById('progressWrap').style.display = 'none';
+  const ls = document.getElementById('loadingStage');
+  ls.classList.add('active');
+  ls.style.display = 'block';
+
+  const steps = document.querySelectorAll('#loaderSteps li');
+  let i = 0;
+  const interval = setInterval(() => {
+    if(i < steps.length){ steps[i].classList.add('done'); i++; }
+    else { clearInterval(interval); }
+  }, 400);
+
+  setTimeout(() => {
+    ls.style.display = 'none';
+    ls.classList.remove('active');
+    showResult();
+  }, 2400);
+}
+
+function calculateProfile(){
+  // Simple scoring based on answers
+  const scores = {explorador:0, emocional:0, analitico:0, social:0, nostalgico:0};
+
+  // Q1 - Why watch
+  if(answers[0] === 1) scores.emocional += 3;
+  if(answers[0] === 2) scores.explorador += 3;
+  if(answers[0] === 3) scores.social += 3;
+  if(answers[0] === 0) scores.nostalgico += 2;
+
+  // Q2 - genres (multi)
+  const genres = answers[1] || [];
+  if(genres.includes(0)) {scores.analitico+=1;scores.emocional+=1;}
+  if(genres.includes(1)) {scores.explorador+=2;scores.analitico+=1;}
+  if(genres.includes(2)) scores.social+=2;
+  if(genres.includes(3)) scores.emocional+=2;
+
+  // Q3 - era
+  if(answers[2] === 0) scores.nostalgico += 3;
+  if(answers[2] === 1) scores.nostalgico += 2;
+  if(answers[2] === 2) scores.explorador += 2;
+
+  // Q5 - frequency
+  if(answers[4] === 0) scores.social += 1;
+
+  // Q6 - with whom
+  if(answers[5] === 0) {scores.analitico+=1;scores.explorador+=1;}
+  if(answers[5] === 3) scores.social += 3;
+
+  // Q9 - frustration
+  if(answers[8] === 0) scores.emocional += 1;
+  if(answers[8] === 3) scores.analitico += 2;
+
+  // Q10 - Netflix scroll
+  if(answers[9] === 0) scores.emocional += 1;
+
+  // Q11 - recommendations
+  if(answers[10] === 0) scores.social += 2;
+  if(answers[10] === 1) scores.analitico += 3;
+  if(answers[10] === 3) scores.explorador += 2;
+
+  // Q12 - plot twists
+  if(answers[11] === 1) scores.explorador += 2;
+  if(answers[11] === 2) scores.analitico += 2;
+
+  // Q13 - rewatch
+  if(answers[12] === 0) scores.nostalgico += 3;
+  if(answers[12] === 1) scores.nostalgico += 2;
+  if(answers[12] === 2) scores.explorador += 2;
+
+  return Object.entries(scores).sort((a,b)=>b[1]-a[1])[0][0];
+}
+
+function showResult(){
+  const profile = calculateProfile();
+  const data = PROFILES[profile];
+
+  document.getElementById('resIcon').textContent = data.icon;
+  document.getElementById('resName').innerHTML = data.name;
+  document.getElementById('resDesc').textContent = data.desc;
+
+  const traitsEl = document.getElementById('resTraits');
+  traitsEl.innerHTML = data.traits.map(t => `<span class="trait-tag">${t}</span>`).join('');
+
+  document.getElementById('ctaTitle').textContent = data.cta.title;
+  document.getElementById('ctaSub').textContent = data.cta.sub;
+
+  const ctaBtn = document.getElementById('ctaBtn');
+  ctaBtn.textContent = data.cta.btn;
+
+  const resultStage = document.getElementById('resultStage');
+  resultStage.classList.add('active');
+  resultStage.style.display = 'block';
+
+  // Build URL with profile param
+  const name = encodeURIComponent(answers['name'] || '');
+  const email = encodeURIComponent(answers['email'] || '');
+  const wp = encodeURIComponent(answers['whatsapp'] || '');
+  ctaBtn.href = `https://mrcine.pro?perfil=${profile}&nome=${name}&email=${email}&wp=${wp}`;
+
+  // Scroll to result
+  resultStage.scrollIntoView({behavior:'smooth', block:'start'});
+
+  // Send data to backend (fire and forget)
+  try {
+    const payload = { name:answers['name'], email:answers['email'], whatsapp:answers['whatsapp'], profile_type:profile, answers:answers, completed:true };
+    fetch('https://mrcine.pro/api/quiz-lead', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    }).catch(()=>{});
+  } catch(e){}
+}
+
+// ── SHARE ─────────────────────────────────────────────────────────────────
+function shareWhatsApp(){
+  const text = encodeURIComponent("Fiz o Quiz de Perfil Cinematográfico do MrCine e descobri que sou um " + document.getElementById('resName').textContent.replace(/[^a-zA-ZÀ-ú ]/g,'').trim() + "! Faz o teu também 👉 https://mrcine.pro/quiz");
+  window.open('https://wa.me/?text=' + text, '_blank');
+}
+
+function copyLink(){
+  navigator.clipboard.writeText('https://mrcine.pro/quiz').then(() => {
+    const btn = document.getElementById('copyLinkText');
+    btn.textContent = 'Link copiado! ✓';
+    setTimeout(() => btn.textContent = 'Copiar link', 2000);
+  }).catch(() => {
+    document.getElementById('copyLinkText').textContent = 'mrcine.pro/quiz';
+  });
+}
+</script>
+</body>
+</html>
